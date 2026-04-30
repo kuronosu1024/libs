@@ -73,7 +73,14 @@ ul {
     font-size: 0.9em;
     overflow-x: auto;
 }
-
+/* header */
+header {
+    color: #000000;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: normal;
+}
 /* footer */
 footer {
     background-color: #333444;

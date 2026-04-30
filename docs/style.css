@@ -30,7 +30,14 @@ h2 {
     padding-bottom: 0.5rem;
 }
 
+h3 {
+    font-weight: normal;
+    font-size: 1.2rm;
+    padding: 5px 8px;
+}
+
 .subheading{
+    padding-top: 12px;
     border-bottom: 1px solid;
     font-weight: normal;
 }
@@ -38,6 +45,7 @@ h2 {
 /* テキスト */
 .text {
     font-size: 0.85rem;
+    padding: 0px 6px;
 }
 
 .text-small {
@@ -61,13 +69,13 @@ ul {
 
 .ul-lite {
     font-size: 0.85rem;
-    padding: 5px 0;
+    padding: 5px 12px;
 }
 
 /* コード */
 .code-lite {
     background: #f6f8fa;
-    padding: 10px 12px;
+    padding: 10px 18px;
     border-radius: 2px;
     font-family: Consolas, monospace;
     font-size: 0.9em;

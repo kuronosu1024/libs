@@ -3,7 +3,7 @@
 #include "../../library/template/template.hpp"
 
 #include "../../library/datastructure/unionfind_with_potential.hpp"
-#include "../../library/mathtype/modint.hpp"
+#include "../../library/math/modint.hpp"
 
 using namespace nskr;
 
@@ -34,7 +34,7 @@ int main(void){
             else cout << x.second.val() << "\n";
         }else{
             int u,v,x;cin>>u>>v>>x;
-            bool a = uf.murge(u,v,x);
+            bool a = uf.murge(v,u,x);
             if(a) cout << "1\n";
             else cout << "0\n";
         }

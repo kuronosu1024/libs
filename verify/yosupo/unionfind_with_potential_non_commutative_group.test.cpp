@@ -3,7 +3,7 @@
 #include "../../library/template/template.hpp"
 
 #include "../../library/datastructure/unionfind_with_potential.hpp"
-#include "../../library/mathtype/modint.hpp"
+#include "../../library/math/modint.hpp"
 
 using namespace nskr;
 

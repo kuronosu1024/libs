@@ -25,7 +25,7 @@ jobs:
         run: pip install online-judge-verify-helper
 
       - name: Run verify explicitly
-        run: oj-verify all
+        run: oj-verify run
 
       - name: Generate docs
         run: oj-verify docs

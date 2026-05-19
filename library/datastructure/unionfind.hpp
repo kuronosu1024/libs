@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+#include <utility>
+#include <algorithm>
+using namespace std;
 
 namespace nskr{
     
@@ -9,8 +13,7 @@ namespace nskr{
         unionfind(int n){
             pr.resize(n);
             sz.resize(n,1);
-            int i;
-            rep(i,n) pr[i] = i;
+            for(int i=0;i<n;i++) pr[i] = i;
         }
 
         inline int find(int x){ 

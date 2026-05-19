@@ -1,5 +1,11 @@
 #pragma once
 
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <algorithm>
+using namespace std;
+
 namespace nskr{
 
     //nyaan氏の実装をかなり参考にした

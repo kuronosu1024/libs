@@ -1,5 +1,10 @@
 #pragma once
 
+#include <vector>
+#include <utility>
+#include <algorithm>
+using namespace std;
+
 namespace nskr{
     template <class S, S (*op)(S,S), S (*inv)(S), S (*e)()>
     struct unionfind_p{
@@ -12,8 +17,7 @@ namespace nskr{
             pr.resize(n);
             sz.resize(n,1);
             val.resize(n,e()); 
-            int i;
-            rep(i,n) pr[i] = i;
+            for(int i=0;i<n;i++) pr[i] = i;
         }
 
         pair<int,S> find(int x){ 

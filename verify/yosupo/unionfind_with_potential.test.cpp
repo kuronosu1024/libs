@@ -29,12 +29,12 @@ int main(void){
         int t; cin >> t;
         if(t){
             int u, v; cin >> u >> v;
-            auto x = uf.get(v,u);
+            auto x = uf.get(u,v);
             if(!x.first) cout << "-1\n";
             else cout << x.second.val() << "\n";
         }else{
             int u,v,x;cin>>u>>v>>x;
-            bool a = uf.murge(v,u,x);
+            bool a = uf.murge(u,v,x);
             if(a) cout << "1\n";
             else cout << "0\n";
         }

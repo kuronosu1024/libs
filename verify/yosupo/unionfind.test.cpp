@@ -1,8 +1,8 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind"
 
-#include "../library/template/template.hpp"
+#include "../../library/template/template.hpp"
 
-#include "../library/datastructure/unionfind.hpp"
+#include "../../library/datastructure/unionfind.hpp"
 
 using namespace nskr;
 int main(void){

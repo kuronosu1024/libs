@@ -52,3 +52,8 @@ namespace nskr{
 
 
 }
+
+
+/**
+ * @brief ポテンシャル付きunionfind
+ */

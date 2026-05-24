@@ -32,3 +32,9 @@ namespace nskr{
         }
     };
 }
+
+
+
+/**
+ * @brief ハッシュ関数
+ */

@@ -197,5 +197,5 @@ namespace nskr{
 }
 
 /**
- * @brief Sorted Set(AA Tree)
+ * @brief ランダムアクセス可能なSet (AA Tree)
  */

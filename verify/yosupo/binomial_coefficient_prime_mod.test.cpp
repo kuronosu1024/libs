@@ -5,6 +5,8 @@
 
 using namespace nskr;
 int main(void){
+    cin.tie(nullptr);
+    ios::sync_with_stdio(false);
     int t, m; cin >> t >> m;
     modint<0> x;x.set_mod(m);
     convolution<modint<0>> c;

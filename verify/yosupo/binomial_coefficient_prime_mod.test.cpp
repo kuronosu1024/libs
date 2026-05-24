@@ -5,6 +5,7 @@
 
 using namespace nskr;
 int main(void){
+    
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
     int t, m; cin >> t >> m;

@@ -34,10 +34,10 @@ namespace nskr{
         modint operator-() const {return modint(-v);}
         modint operator+() const {return *this;}
 
-        modint operator+(const modint& x) const {return modint(*this)+=x.v;}
-        modint operator-(const modint& x) const {return modint(*this)-=x.v;}
-        modint operator*(const modint& x) const {return modint(*this)*=x.v;}
-        modint operator/(const modint& x) const {return modint(*this)/=x.v;}
+        modint operator+(const modint& x) const {return modint(*this)+=x;}
+        modint operator-(const modint& x) const {return modint(*this)-=x;}
+        modint operator*(const modint& x) const {return modint(*this)*=x;}
+        modint operator/(const modint& x) const {return modint(*this)/=x;}
 
         bool operator== (const modint& x) const {return v==x.v;}
         bool operator!= (const modint& x) const {return v!=x.v;}

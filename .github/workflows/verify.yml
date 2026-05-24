@@ -50,7 +50,7 @@ jobs:
       - name: Generate docs
         run: |
           rm -rf docs
-          oj-verify docs --output docs
+          oj-verify docs
 
       - name: Disable Jekyll
         run: touch docs/.nojekyll

@@ -4,7 +4,7 @@
 #include <vector>
 namespace nskr{
     template<typename mint>
-    struct convolution{
+    struct combination{
         vector<mint> fac;
         convolution():fac({mint(1)}){}
         
@@ -16,7 +16,7 @@ namespace nskr{
             return;
         }
 
-        mint conv(int n, int r){ 
+        mint comb(int n, int r){ 
             if(r>n || r<0 || n<0) return 0;
             if(n-r < r) r = n-r;
             if(fac.size() > n) return fac[n] * fac[r].inv() * fac[n-r].inv();

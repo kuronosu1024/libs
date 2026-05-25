@@ -6,7 +6,7 @@ namespace nskr{
     template<typename mint>
     struct combination{
         vector<mint> fac;
-        convolution():fac({mint(1)}){}
+        combination():fac({mint(1)}){}
         
         void preculc(int n){
             fac.reserve(n);

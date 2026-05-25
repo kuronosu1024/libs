@@ -32,7 +32,7 @@ jobs:
         run: oj-verify run
 
       - name: Generate docs
-        run: oj-verify docs --output docs
+        run: oj-verify docs
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

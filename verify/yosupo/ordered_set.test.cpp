@@ -28,12 +28,12 @@ int main(void){
             cout << s.rank(x) << "\n";
         }if(t==4){
             auto it = s.upper_bound(x);
-            if(it == s.sentinel) cout << "-1\n";
-            else cout << it->key << "\n";
+            if(it == s.begin()) cout << "-1\n";
+            else cout << *(--it) << "\n";
         }if(t==5){
             auto it = s.lower_bound(x);
-            if(it == s.sentinel) cout << "-1\n";
-            else cout << it->key << "\n";
+            if(it == s.end()) cout << "-1\n";
+            else cout << *it << "\n";
         }
     } 
 }

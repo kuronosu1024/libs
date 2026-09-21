@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>sortedset - kuronosu1024</title>
+    <meta property="og:title" content="sortedset - kuronosu1024">
+    <meta property="og:description" content="競プロ、および趣味のための自作ライブラリ">
+    <meta property="og:url" content="https://kuronosu1024.github.io/about/">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="nosu_sironech">
+    <meta property="og:image" content="https://kuronosu1024.github.io/about/images/top_icon.png" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://kuronosu1024.github.io/about/style.css">
+    <link rel="icon" href="https://kuronosu1024.github.io/about/images/top_icon.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script> <!--上と二つ合わせてc++コードのエディタ風表示用-->
+
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><!--latexみたいに数式を書く用-->
+
+    <style>
+    </style>
+    
+</head>
+<body>
+    
+<div class="container">
+    <header>
+        ライブラリー/sortedset
+    </header>
+</div>
+
+<div class="container">
+    <main>
+        <section id="abst">
+        <h2>概要</h2>
+            本体→<a href = "https://kuronosu1024.github.io/libs/library/datastructure/sortedset.hpp">https://kuronosu1024.github.io/libs/library/datastructure/sortedset.hpp</a><br>
+            <br>
+            ランダムアクセスができるset (実装は<a href="https://en.wikipedia.org/wiki/AA_tree">AAtree</a>)<br>
+            イテレータも用意した（してもらった）ので、begin(), rbegin()とかも使えます<br>
+
+        </section>
+        
+        <section id="constructor">
+        <h2>コンストラクタ</h2>
+            <pre><code class="language-cpp">
+sortedset&lt;T&gt; st;
+            </code></pre>
+            <ul><li> 型 \(T\) の空のsortedsetを生成します</li></ul>
+            <h4>制約</h4>
+            <ul>
+                <li><code>T</code>は全順序集合である必要があります (比較演算子が定義されている必要があります) </li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(1)\)</li>
+            </ul>
+        </section>
+
+        <section id="[]">
+        <h2>[]演算子</h2>
+            <pre><code class="language-cpp">
+const T st[int i];
+            </code></pre>
+            <ul><li> コンテナの要素のうち、i番目に小さいものの値を返します  </li></ul>
+            <h4>制約</h4>
+            <ul>
+                <li>\(0 \le i \lt n\)</li>
+                <li>範囲外参照をした場合、<code>T()</code>を返します</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+         <section id="iterator">
+        <h2>イテレータの型</h2>
+            <pre><code class="language-cpp">
+sortedset&lt;T&gt; st;
+const sortedset&lt;T&gt; cst;
+
+st.begin()  , st.end()   // sortedset&lt;T&gt;::iterator 
+cst.begin() , cst.end()  // sortedset&lt;T&gt;::const_iterator 
+st.rbegin() , st.rend()  // sortedset&lt;T&gt;::reverse_iterator 
+cst.rbegin(), cst.rend() // sortedset&lt;T&gt;::const_reverse_iterator
+            </code></pre>
+            <ul>
+                <li>イテレータです 通常のstd::setのと同じ機能です</li>
+                <li>したがって、使い方はそっちを調べるとよいです（説明放棄）</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>値のアクセス : \(O(1)\)</li>
+                <li>インクリメント/デクリメント : ならし\(O(1)\)
+            </ul>
+        </section>
+
+        <section id="size">
+        <h2>size</h2>
+            <pre><code class="language-cpp">
+size_t st.size()
+            </code></pre>
+            <ul><li>コンテナの要素数 \(n\) を返します</li></ul>
+            <h4>制約</h4>
+            <ul>
+                <li>特にない</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(1)\)</li>
+            </ul>
+        </section>
+
+        <section id="insert">
+        <h2>insert</h2>
+            <pre><code class="language-cpp">
+void st.insert(T key)
+            </code></pre>
+            <ul>
+                <li>コンテナに要素<code>key</code>を追加します</li>
+                <li>要素が重複したときは何も起きません</li>
+            </ul>
+
+            <h4>制約</h4>
+            <ul>
+                <li>特にない</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+
+        <section id="erase">
+        <h2>erase</h2>
+            <pre><code class="language-cpp">
+void st.erase(T key)
+            </code></pre>
+            <ul>
+                <li>コンテナから要素<code>key</code>を削除します</li>
+                <li>なかったら何も起きません</li>
+            </ul>
+            <h4>制約</h4>
+            <ul>
+                <li>特になし</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+
+        <section id="find">
+        <h2>find</h2>
+            <pre><code class="language-cpp">
+sortedset&lt;T&gt;::iterator st.find(T key) //stが非constのとき
+sortedset&lt;T&gt;::const_iterator st.find(T key) //stがconstのとき
+            </code></pre>
+            <ul>
+                <li>コンテナに<code>key</code>が含まれているとき、<code>key</code>を指すイテレータを返します</li>
+                <li>含まれないとき、<code>st.end()</code>を返します</li>
+            </ul>
+
+            <h4>制約</h4>
+            <ul>
+                <li>特になし</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+
+        <section id="count">
+        <h2>count</h2>
+            <pre><code class="language-cpp">
+size_t st.count(T key)
+            </code></pre>
+            <ul><li>コンテナに含まれる<code>key</code>の個数（0か1）を返します</li></ul>
+            <h4>制約</h4>
+            <ul>
+                <li>特になし</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+
+        <section id="upper_bound">
+        <h2>upper_bound</h2>
+            <pre><code class="language-cpp">
+sortedset&lt;T&gt;::iterator st.upper_bound(T key) //stが非constのとき
+sortedset&lt;T&gt;::const_iterator st.upper_bound(T key) //stがconstのとき
+            </code></pre>
+            <ul>
+                <li><code>key</code>より大きい要素であって最も小さいものを返します</li>
+                <li><code>key</code>より大きい要素がなかった時、<code>st.end()</code>を返します</li>
+            </ul>
+            <h4>制約</h4>
+            <ul>
+                <li>特になし</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+
+        <section id="lower_bound">
+        <h2>lower_bound</h2>
+            <pre><code class="language-cpp">
+sortedset&lt;T&gt;::iterator st.lower_bound(T key) //stが非constのとき
+sortedset&lt;T&gt;::const_iterator st.lower_bound(T key) //stがconstのとき
+            </code></pre>
+            <ul>
+                <li><code>key</code>以上の要素であって最も小さいものを返します</li>
+                <li><code>key</code>以上の要素がなかった時、<code>st.end()</code>を返します</li>
+            </ul>
+            <h4>制約</h4>
+            <ul>
+                <li>特になし</li>
+            </ul>
+            <h4>計算量</h4>
+            <ul>
+                <li>\(O(\log n)\)</li>
+            </ul>
+        </section>
+
+
+       
+    </main>
+
+    <aside>
+        <div class="sidebar">
+
+            <h3><a href="https://kuronosu1024.github.io/about/">メインページへ</a></h3><br>
+            <h3><a href="https://kuronosu1024.github.io/about/diary/top.html">雑記</a></h3>
+
+            <hr>
+            <h3> 目次</h3>
+
+            <ul>
+                <li><a href="#abst">概要</a></li>
+
+            </ul>
+
+            <hr>
+
+            <a href="#">一番上へ</a><br>
+
+        </div>
+        
+    </aside>
+
+</div>
+<script> hljs.highlightAll(); </script>
+
+<footer>
+    © 2026 kuronosu1024
+</footer>
+
+</body>
+</html>

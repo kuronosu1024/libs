@@ -5,8 +5,10 @@
 using namespace std;
 
 namespace nskr{
+    
     template<typename T>
     struct sortedset{
+        // https://kuronosu1024.github.io/libs/docs/datastructure/sortedset.html
         struct node{
             T key;
             int level;
@@ -160,10 +162,18 @@ namespace nskr{
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
         
-        node* sentinel;
+        node* sentinel;  // == st.end()
+
         private:
         
         node* root;
+
+        void destroy(node* x){
+            if(x == nullptr) return;
+            destroy(x->left);
+            destroy(x->right);
+            delete x;
+        }
         
         node* skew(node* x){ //左同levelを解決
             if(x==nullptr) return nullptr;
@@ -297,7 +307,14 @@ namespace nskr{
             return x;
         }
 
-        node* lower_bound(node* x, T key){//key以上の最小
+        node* find(node* x, T key) const {
+            if(x==nullptr) return sentinel;
+            if(x->key < key) return find(x->right, key);
+            if(x->key > key) return find(x->left, key);
+            return x;
+        }
+
+        node* lower_bound(node* x, T key) const {//key以上の最小
             if(x == nullptr)return sentinel;
             if(x->key < key){
                 return lower_bound(x->right, key);
@@ -309,12 +326,12 @@ namespace nskr{
             return x;
         }
 
-        node* upper_bound(node* x, T key){//key以下の最大
+        node* upper_bound(node* x, T key) const {//key超過の最小
             if(x == nullptr)return sentinel;
-            if(x->key > key){
-                return upper_bound(x->left, key);
-            }if(x->key < key){
-                node* ret = upper_bound(x->right, key);
+            if(!(x->key > key)){
+                return upper_bound(x->right, key);
+            }if(!(x->key < key)){
+                node* ret = upper_bound(x->left, key);
                 if(ret == sentinel) return x;
                 else return ret;
             }
@@ -339,7 +356,11 @@ namespace nskr{
 
 
         
-        sortedset():root(nullptr),sentinel(){}
+        sortedset():sentinel(nullptr),root(nullptr){}
+        ~sortedset(){destroy(root);}
+
+        sortedset(const sortedset&) = delete;
+        sortedset& operator=(const sortedset&) = delete;
         
         const T operator[](int t){
             node* x = get(root, t);
@@ -360,6 +381,22 @@ namespace nskr{
         void erase(T key){
             root = erase(root, key);
             if(root != nullptr) root->parent = nullptr;
+        }
+
+        iterator find(T key){
+            node* x = find(root, key);
+            return iterator(this, x);
+        }
+
+        const_iterator find(T key) const {
+            node* x = find(root, key);
+            return const_iterator(this, x);
+        }
+
+        size_t count(T key){
+            node* x = find(root, key);
+            if(x == sentinel) return 0;
+            return 1;
         }
 
         iterator begin(){
@@ -400,11 +437,15 @@ namespace nskr{
             return const_reverse_iterator(begin());
         }
         
-        node* lower_bound(T key){return lower_bound(root,key);}
-        node* upper_bound(T key){return upper_bound(root,key);}        
-
+        iterator lower_bound(T key){return iterator(this,lower_bound(root,key));}
+        iterator upper_bound(T key){return iterator(this,upper_bound(root,key));}
+        
+        const_iterator lower_bound(T key) const {return const_iterator(this,lower_bound(root,key));}
+        const_iterator upper_bound(T key) const {return const_iterator(this,upper_bound(root,key));}
+ 
         int rank(T key){return rank(root,key);}
     };
+
 }
 
 /**

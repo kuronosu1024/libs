@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <iterator>
 using namespace std;
 
 namespace nskr{
@@ -9,11 +10,155 @@ namespace nskr{
         struct node{
             T key;
             int level;
-            node *left, *right;
+            node *left, *right, *parent;
             int lcount, rcount;
             
-            node(T x) :key(x), level(0), left(nullptr), right(nullptr),lcount(0),rcount(0){}
+            node(T x) :key(x), level(0), left(nullptr), right(nullptr), parent(nullptr), lcount(0), rcount(0){}
+            node() :key(), level(0), left(nullptr), right(nullptr), parent(nullptr), lcount(0), rcount(0){}
         };
+
+        class const_iterator;
+
+        class iterator{
+            sortedset* owner;
+            node* current;
+
+            iterator(sortedset* owner, node* current)
+                : owner(owner), current(current){}
+
+            friend struct sortedset;
+            friend class const_iterator;
+
+        public:
+            using difference_type = ptrdiff_t;
+            using value_type = T;
+            using pointer = const T*;
+            using reference = const T&;
+            using iterator_category = bidirectional_iterator_tag;
+
+            iterator() : owner(nullptr), current(nullptr){}
+
+            reference operator*() const { return current->key; }
+            pointer operator->() const { return &current->key; }
+
+            iterator& operator++(){
+                if(current == nullptr) return *this;
+                if(current->right != nullptr){
+                    current = current->right;
+                    while(current->left != nullptr) current = current->left;
+                    return *this;
+                }
+                node* child = current;
+                current = current->parent;
+                while(current != nullptr && child == current->right){
+                    child = current;
+                    current = current->parent;
+                }
+                return *this;
+            }
+
+            iterator operator++(int){
+                iterator ret = *this;
+                ++*this;
+                return ret;
+            }
+
+            iterator& operator--(){
+                if(current == nullptr){
+                    current = owner->root;
+                    if(current != nullptr){
+                        while(current->right != nullptr) current = current->right;
+                    }
+                    return *this;
+                }
+                if(current->left != nullptr){
+                    current = current->left;
+                    while(current->right != nullptr) current = current->right;
+                    return *this;
+                }
+                node* child = current;
+                current = current->parent;
+                while(current != nullptr && child == current->left){
+                    child = current;
+                    current = current->parent;
+                }
+                return *this;
+            }
+
+            iterator operator--(int){
+                iterator ret = *this;
+                --*this;
+                return ret;
+            }
+
+            bool operator==(const iterator& x) const{
+                return owner == x.owner && current == x.current;
+            }
+
+            bool operator!=(const iterator& x) const{
+                return !(*this == x);
+            }
+        };
+
+        class const_iterator{
+            const sortedset* owner;
+            node* current;
+
+            const_iterator(const sortedset* owner, node* current)
+                : owner(owner), current(current){}
+
+            friend struct sortedset;
+
+        public:
+            using difference_type = ptrdiff_t;
+            using value_type = T;
+            using pointer = const T*;
+            using reference = const T&;
+            using iterator_category = bidirectional_iterator_tag;
+
+            const_iterator() : owner(nullptr), current(nullptr){}
+            const_iterator(const iterator& x) : owner(x.owner), current(x.current){}
+
+            reference operator*() const { return current->key; }
+            pointer operator->() const { return &current->key; }
+
+            const_iterator& operator++(){
+                iterator x(const_cast<sortedset*>(owner), current);
+                ++x;
+                current = x.current;
+                return *this;
+            }
+
+            const_iterator operator++(int){
+                const_iterator ret = *this;
+                ++*this;
+                return ret;
+            }
+
+            const_iterator& operator--(){
+                iterator x(const_cast<sortedset*>(owner), current);
+                --x;
+                current = x.current;
+                return *this;
+            }
+
+            const_iterator operator--(int){
+                const_iterator ret = *this;
+                --*this;
+                return ret;
+            }
+
+            bool operator==(const const_iterator& x) const{
+                return owner == x.owner && current == x.current;
+            }
+
+            bool operator!=(const const_iterator& x) const{
+                return !(*this == x);
+            }
+        };
+
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
         
         node* sentinel;
         private:
@@ -25,8 +170,11 @@ namespace nskr{
             if(x->left==nullptr) return x;
             if(x->left->level==x->level){
                 node* leftnode = x->left;
+                leftnode->parent = x->parent;
                 x->left = leftnode->right;
+                if(x->left != nullptr) x->left->parent = x;
                 leftnode->right = x;
+                x->parent = leftnode;
                 // swap(leftnode->rcount, x->lcount);
                 // leftnode->lcount += x->rcount - leftnode->lcount;
                 setcount(x);
@@ -43,8 +191,11 @@ namespace nskr{
             if(x->right->right==nullptr) return x;
             if(x->right->right->level == x->level){
                 node* rightnode = x->right;
+                rightnode->parent = x->parent;
                 x->right = rightnode->left;
+                if(x->right != nullptr) x->right->parent = x;
                 rightnode->left = x;
+                x->parent = rightnode;
                 rightnode->level++;
                 // swap(x->rcount,rightnode->lcount);
                 // rightnode->lcount += x->lcount - rightnode->rcount;
@@ -70,8 +221,10 @@ namespace nskr{
             if(x == nullptr) return new node(key);
             if(x->key < key){
                 x->right = insert(x->right, key);
+                x->right->parent = x;
             }else if(x->key > key){
                 x->left  = insert(x->left , key);
+                x->left->parent = x;
             } else return x;
             setcount(x);
             return split(skew(x));
@@ -81,15 +234,20 @@ namespace nskr{
             if(x == nullptr) return nullptr;
             if(key < x->key) {
                 x-> left = erase(x->left, key);
-            }else if(key > x->key) x->right=erase(x->right, key);
-            else{
+                if(x->left != nullptr) x->left->parent = x;
+            }else if(key > x->key){
+                x->right=erase(x->right, key);
+                if(x->right != nullptr) x->right->parent = x;
+            }else{
                 if(x->left == nullptr){
                     node* ret = x->right;
+                    if(ret != nullptr) ret->parent = x->parent;
                     delete x;
                     return ret;
                 }
                 if(x->right == nullptr){
                     node* ret = x->left;
+                    if(ret != nullptr) ret->parent = x->parent;
                     delete x;
                     return ret;
                 }
@@ -97,6 +255,7 @@ namespace nskr{
                 while(tgt->left != nullptr) tgt = tgt->left;
                 x->key = tgt->key;
                 x->right = erase(x->right, tgt->key);
+                if(x->right != nullptr) x->right->parent = x;
             }
             setcount(x);
             
@@ -115,11 +274,16 @@ namespace nskr{
             x = skew(x);
             if(x->right != nullptr){
                 x->right = skew(x->right);
+                x->right->parent = x;
                 if(x->right->right != nullptr) x->right->right = skew(x->right->right);
+                if(x->right->right != nullptr) x->right->right->parent = x->right;
             }
 
             x = split(x);
-            if(x->right != nullptr) x->right = split(x->right);
+            if(x->right != nullptr){
+                x->right = split(x->right);
+                x->right->parent = x;
+            }
 
             return x;
         }
@@ -167,13 +331,15 @@ namespace nskr{
             if(x->key>key){
                 return rank(x->left,key);
             }
+            // ここに来ることは仕様上ないはずだが、コンパイルエラーがうるさいので一応
+            return -1;
         }
         
         public:
 
 
         
-        sortedset():root(nullptr),sentinel(0){}
+        sortedset():root(nullptr),sentinel(){}
         
         const T operator[](int t){
             node* x = get(root, t);
@@ -186,11 +352,56 @@ namespace nskr{
             return root->lcount + root->rcount + 1;
         }
 
-        void insert(T key){root = insert(root, key);}
-        void erase(T key){root = erase(root, key);}
+        void insert(T key){
+            root = insert(root, key);
+            if(root != nullptr) root->parent = nullptr;
+        }
+
+        void erase(T key){
+            root = erase(root, key);
+            if(root != nullptr) root->parent = nullptr;
+        }
+
+        iterator begin(){
+            node* x = root;
+            while(x != nullptr && x->left != nullptr) x = x->left;
+            return iterator(this, x);
+        }
+
+        iterator end(){return iterator(this, nullptr);}
+
+        const_iterator begin() const{
+            node* x = root;
+            while(x != nullptr && x->left != nullptr) x = x->left;
+            return const_iterator(this, x);
+        }
+
+        const_iterator end() const{return const_iterator(this, nullptr);}
+
+        const_iterator cbegin() const{return begin();}
+        const_iterator cend() const{return end();}
+
+        reverse_iterator rbegin(){return reverse_iterator(end());}
+        reverse_iterator rend(){return reverse_iterator(begin());}
+
+        const_reverse_iterator rbegin() const{
+            return const_reverse_iterator(end());
+        }
+
+        const_reverse_iterator rend() const{
+            return const_reverse_iterator(begin());
+        }
+
+        const_reverse_iterator crbegin() const{
+            return const_reverse_iterator(end());
+        }
+
+        const_reverse_iterator crend() const{
+            return const_reverse_iterator(begin());
+        }
         
         node* lower_bound(T key){return lower_bound(root,key);}
-        node* upper_bound(T key){return upper_bound(root,key);}
+        node* upper_bound(T key){return upper_bound(root,key);}        
 
         int rank(T key){return rank(root,key);}
     };

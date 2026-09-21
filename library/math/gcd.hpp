@@ -6,8 +6,8 @@
 
 namespace nskr{
     uint64_t binary_gcd(uint64_t a, uint64_t b){
-        if(a==0) return b;
-        if(b==0) return a;
+        if(a*b==0) return a+b;
+
         char as = __builtin_ctzll(a);
         char bs = __builtin_ctzll(b);
         a>>=as;

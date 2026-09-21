@@ -23,7 +23,7 @@ namespace nskr{
         return a << (as > bs ? bs : as);
     }
 
-    template <typename T>
+    template <typename T> //Tがユークリッド整域であって、%演算子が適切に実装されていることを要求する
     T gcd(T a, T b){
         if(a==T(0)) return b;
         if(b==T(0)) return a;
@@ -35,6 +35,24 @@ namespace nskr{
         }
 
         return a;
+    }
+
+    template <typename T> //Tがユークリッド整域であって、%演算子が適切に実装されていることを要求する
+    array<T,3> extgcd(T a, T b){ // ax + by = gcd(a,b) を満たす x,y と gcd(a,b) をこの順で返す
+        T x0 = T(1), x1 = T(0), x2, y0 = T(1), y1 = T(0), y2;
+        while(b!=T(0)){
+            T r = a%b;
+            T q = (a-r)/b;
+
+            x2 = x0 - q * x1;
+            x0 = x1;
+            x1 = x2;
+
+            y2 = y0 - q * y1;
+            y0 = y1;
+            y1 = y2;
+        }
+        return {x0,y0,a};
     }
 }
 

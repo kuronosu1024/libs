@@ -4,7 +4,7 @@
 #include "round_div.hpp"
 
 namespace nskr{
-    struct v2int{
+    struct v2int{ //int型2次元ベクトル
         int x,y;
 
         v2int():x(0),y(0){;}
@@ -54,7 +54,7 @@ namespace nskr{
         return (long long)a.x*b.y + (long long)b.x*a.y;
     }
 
-    struct l2int{
+    struct l2int{ //int型2次元直線
         v2int a, b; // a+bt 
 
         l2int():a(v2int(0,0)),b(v2int(1,0)){;}
@@ -63,8 +63,8 @@ namespace nskr{
             long long k = round_div(dot(a0,b),b.norm());
             a = a0 + k*b;
         }
-        l2int(int s,int t,int u){ //ax + by = c
-            b = v2int(s,-t).reduced();
+        l2int(int a0,int b0,int c0){ //ax + by = c
+            b = v2int(a0,-b0).reduced();
         }
     };
 

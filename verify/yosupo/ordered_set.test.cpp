@@ -24,7 +24,7 @@ int main(void){
                 x = s[x];
                 cout << x << "\n";
             }    
-        }if(t==3){
+        }if(t==3){ 
             cout << s.rank(x) << "\n";
         }if(t==4){
             auto it = s.upper_bound(x);

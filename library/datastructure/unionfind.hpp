@@ -9,6 +9,7 @@ namespace nskr{
     
     struct unionfind{
         //unionfind - union by size, 経路圧縮
+        // 
         vector<int> pr, sz;
         unionfind(int n){
             pr.resize(n);
